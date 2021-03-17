@@ -6,16 +6,16 @@
  */
 
 interface Switch {
-  static on(): void,
-  static off(): void
+  on(): void,
+  off(): void
 }
 
 class Cooler implements Switch {
-  static on(): void {
+  on(): void {
     console.log('쿨러 작동 시작!')
   }
-  static off(): void {
-    console.log('쿨러 작동 끝!')
+  off(): void {
+    console.log('쿨러 작동 종료!')
   }
 }
 
@@ -40,31 +40,58 @@ class Turntable implements Switch {
 class TimerChecker implements Switch {
   static TIME_INTERVAL: number = 1000;
   private EXPIRED_TIME: number;
+
+  microwave: MicrowaveFacade;
   count: number = 0;
-  constructor(milsec: number){
+  timer: any;
+
+  constructor(milsec: number, microwave: MicrowaveFacade){
     this.EXPIRED_TIME = milsec;
     this.count = this.EXPIRED_TIME/1000;
+    this.microwave = microwave;
 
-    for(let i=this.count; i >= 0; i--){
-      console.log('Timer...', i + '초');
-      (i === 0) && console.log('조리가 완료되었습니다.')
-    }
-    this.off();
+    this.timer = setInterval(() => {
+      if(this.count > 0){
+        console.log('Timer...' + this.count-- + "초")
+      }else{
+        clearInterval(this.timer);
+        this.off();
+        this.microwave.off();
+      }
+    }, 1000);
   }
   on(): void {
-    console.log('타이머 시작')
+    console.log('조리 시작!')
   }
   off(): void {
-    console.log('타이머 종료')
+    console.log('조리가 완료!');
   }
 }
 
-class MicrowaveFacade {
+export default class MicrowaveFacade {
   cooler: Cooler;
   magentron: Magnetron;
   turntable: Turntable;
   timerCheck: TimerChecker;
-  food: string = '';
+
+  switchs: Set<any> = new Set();
   isActive: Boolean = false;
 
+  constructor(milsec: number){
+    this.cooler = new Cooler();
+    this.magentron = new Magnetron();
+    this.turntable = new Turntable();
+    this.timerCheck = new TimerChecker(milsec, this);
+    this.switchs = new Set([this.cooler, this.magentron, this.timerCheck, this.turntable]);
+
+    this.on();
+  }
+  on(): void {
+    for (let item of this.switchs) item.on()
+    this.isActive = true;
+  }
+  off(): void {
+    for (let item of this.switchs) item.off();
+    this.isActive = false;
+  }
 }
