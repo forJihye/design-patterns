@@ -142,6 +142,7 @@ _Fried_ 인터페이스를 정의하여 _CookFried_ (튀기는 방식), _CookGri
 
 치킨의 맛(flavor()), 모양새(display()), _Fried_ 요리방식 인터페이스를 가지고 있는 _Chicken_ 클래스를 만들어서 각 치킨메뉴(_GarlicChicken_, _SpicyChicken_, _FriedChicken_) 클래스를 생성하여 _Chicken_ 클래스를 상속받아 맛, 모양새를 재정의하고 치킨 메뉴에 맞는 요리 방식 _Fried_ 인터페이스 메서드를 호출한다.
 
+-----
 
 ## 2. Singleton Patterns 싱글톤 패턴
 특정 클래스에 대해 new 연산자로 생성되는 인스턴스를 Stack 스택 메모리에 한 번만 할당하여     
@@ -211,4 +212,12 @@ SingletonMain.main();
 `getInstance()`를 통해 3개의 인스턴스를 생성하고 있다.     
 싱글톤 패턴이 제대로 적용되었다면 3개의 인스턴스가 모두 같은 *인스턴스* 일 것이다.
 
-## Template Method Pattern
+-----
+
+## 3. Facade Pattern 퍼사드 패턴
+많은 서브 시스템(내부 구조)을 거대한 클래스(외벽)으로 만들어 감싸서 편리한 인터페이스롤 제공합니다. 의존성을 낮추어 관리를 용이하게 해주어야하는 것이 핵심이다.      
+서브 클래스들 사이의 간단한 통합 인터페이스를 제공해주는 역활.
+
+
+
+
