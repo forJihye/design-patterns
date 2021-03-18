@@ -49,7 +49,77 @@ console.log(person.call()) // 10;
 
 -----
 
-## 1. Strategy Pattern 전략패턴
+## 1. Singleton Patterns 싱글톤 패턴
+특정 클래스에 대해 new 연산자로 생성되는 인스턴스를 Stack 스택 메모리에 한 번만 할당하여     
+이후에 new 연산자를 통한 객체 생성 요구에 대해서는 최초에 생성되었던 객체를 반환하는 디자인 패턴입니다.     
+즉 특정 클래스에 대한 유일 객체를 보장하는 패턴이라고 볼 수 있다.     
+싱글톤 패턴으로 적용된 경우 new 사용을 통한 무분별한 인스턴스 생성을 막기 때문에 메모리 낭비를 방지 할 수 있다.     
+     
+인스턴스가 오직 하나만 생성되어야 하는 케이스에 사용되는 패턴이다.
+
+```ts
+class Singleton {
+  private data : number = 10;
+  private static instance: Singleton;
+  public static getInstance() : Singleton {
+    if(!Singleton.instance){
+      Singleton.instance = new Singleton();
+    }
+    return this.instance;
+  }
+  public setData(data: number): void {
+    this.data = data;
+  }
+  public getData() : number {
+    return this.data;
+  }
+}
+```
+
+인스턴스를 처음부터 생성하는 방법
+```ts
+class Singleton {
+  private static instance : Singleton = new Singleton();
+  public static getInstance() : Singleton {
+    return this.instance
+  }
+}
+```
+
+`private static instance: Singleton;` 생성자의 경우 private로 선언 하면서 외부에서는 new 사용을 막고있다.     
+인스턴스를 생성하기 위해서는 `getInstance()`를 사용하여 `instance`가 null일 경우에만 new 연산자로 인스턴스를 생성하게 됩니다. 즉, 한번 인스턴스가 생성 된 후에는 계속해서 같은 인스턴스만 반환하게 되는 겁니다.
+
+```ts
+
+class SingletonMain {
+  static instance1: Singleton;
+  static instance2: Singleton;
+  static instance3: Singleton;
+  public static main(){
+    this.instance1 = Singleton.getInstance();
+    this.instance2 = Singleton.getInstance();
+    this.instance3 = Singleton.getInstance();
+
+    console.log('instance1: ' + this.instance1.getData())
+    console.log('instance2: ' + this.instance2.getData())
+    console.log('instance3: ' + this.instance3.getData())
+
+    this.instance1.setData(50);
+
+    console.log('instance1: ' + this.instance1.getData())
+    console.log('instance2: ' + this.instance2.getData())
+    console.log('instance3: ' + this.instance3.getData())
+  }
+}
+SingletonMain.main();
+```
+
+`getInstance()`를 통해 3개의 인스턴스를 생성하고 있다.     
+싱글톤 패턴이 제대로 적용되었다면 3개의 인스턴스가 모두 같은 *인스턴스* 일 것이다.
+
+-----
+
+## 2. Strategy Pattern 전략패턴
 알고리즘의 인터페이스를 정의하고, 각각의 알고리즘은 캡슐화하여 동적으로 교체사용 가능하도록 구현하는 디자인 패턴이다.     
 클라이언트와의 독립적으로 구현되기 때문에 새로운 알고리즘을 추가하거나 기존의 알고리즘을 쉽게 변경이 가능하다.     
 
@@ -123,12 +193,12 @@ class Memory {
 }
 ```
 
-### 1-1. 패턴 적용 예제
+### 2-1. 패턴 적용 예제
 > 적용 코드는 디렉토리 ./assets/strategy.ts 확인하기
 
-*[적용 예제 참고 링크]*[https://gdtbgl93.tistory.com/6?category=755764]
+**[적용 예제 참고 링크]**[https://gdtbgl93.tistory.com/6?category=755764]
 
-### 1-2. *전략 패턴 적용 하기 전 문제점*      
+### 2-2. *전략 패턴 적용 하기 전 문제점*      
 <img src="https://t1.daumcdn.net/cfile/tistory/997CC73359C528F317?download" width="500" />      
 
 위 패턴은 _Chicken_ 클래스를 _GarlicChicken_, _SpicyChicken_, _FriedChicken_ 에 상속해서 치킨요리와, 치킨 맛, 치킨 모양새에 대해 정의하고 있다. 지금 3가지 치킨의 요리 방식이 **튀기는 방식 (fried(): void)** 으로 동일하지만, 만약 튀기는 방식이 아닌 **굽는 방식** 의 치킨 신메뉴가 추가된다면, _Chicken_ 클래스에 굽는 메소드를 추가하여 새 메뉴 클래스에 호출할 것이다.     
@@ -136,81 +206,11 @@ class Memory {
 요리 방식의 종류가 늘어나면 _Chicken_ 클래스에 메서드가 점점 추가되고, 사용하지 않은 메서드가 메모리만 차지하게 된다.     
 크게 달라지는 부분이 *요리 방식* 이기 때문에, 방식을 클래스로 캡슐화 하여 각 치킨 클래스에서 필요한 방식의 메서드만 사용해서 메모리 최적화를 할 수 있고, 요리 방식의 수정 사항이 생기면 캡슐화 한 클래스 메서드만 수정하면 된다.
 
-### 1-3. *전략 패턴 적용 후*
+### 2-3. *전략 패턴 적용 후*
 <img src="https://t1.daumcdn.net/cfile/tistory/9901FA3359C5374835?download" width="500" />     
 _Fried_ 인터페이스를 정의하여 _CookFried_ (튀기는 방식), _CookGrill_ (굽는 방식)로 실제 인터페이스를 구현 할 클래스를 만들어서 _Fried_ 인터페이스와 동일한 메서드 이름으로 재정의하였다. (오버라이딩)     
 
 치킨의 맛(flavor()), 모양새(display()), _Fried_ 요리방식 인터페이스를 가지고 있는 _Chicken_ 클래스를 만들어서 각 치킨메뉴(_GarlicChicken_, _SpicyChicken_, _FriedChicken_) 클래스를 생성하여 _Chicken_ 클래스를 상속받아 맛, 모양새를 재정의하고 치킨 메뉴에 맞는 요리 방식 _Fried_ 인터페이스 메서드를 호출한다.
-
------
-
-## 2. Singleton Patterns 싱글톤 패턴
-특정 클래스에 대해 new 연산자로 생성되는 인스턴스를 Stack 스택 메모리에 한 번만 할당하여     
-이후에 new 연산자를 통한 객체 생성 요구에 대해서는 최초에 생성되었던 객체를 반환하는 디자인 패턴입니다.     
-즉 특정 클래스에 대한 유일 객체를 보장하는 패턴이라고 볼 수 있다.     
-싱글톤 패턴으로 적용된 경우 new 사용을 통한 무분별한 인스턴스 생성을 막기 때문에 메모리 낭비를 방지 할 수 있다.     
-     
-인스턴스가 오직 하나만 생성되어야 하는 케이스에 사용되는 패턴이다.
-
-```ts
-class Singleton {
-  private data : number = 10;
-  private static instance: Singleton;
-  public static getInstance() : Singleton {
-    if(!Singleton.instance){
-      Singleton.instance = new Singleton();
-    }
-    return this.instance;
-  }
-  public setData(data: number): void {
-    this.data = data;
-  }
-  public getData() : number {
-    return this.data;
-  }
-}
-```
-
-인스턴스를 처음부터 생성하는 방법
-```ts
-class Singleton {
-  private static instance : Singleton = new Singleton();
-  public static getInstance() : Singleton {
-    return this.instance
-  }
-}
-```
-
-`private static instance: Singleton;` 생성자의 경우 private로 선언 하면서 외부에서는 new 사용을 막고있다.     
-인스턴스를 생성하기 위해서는 `getInstance()`를 사용하여 `instance`가 null일 경우에만 new 연산자로 인스턴스를 생성하게 됩니다. 즉, 한번 인스턴스가 생성 된 후에는 계속해서 같은 인스턴스만 반환하게 되는 겁니다.
-
-```ts
-
-class SingletonMain {
-  static instance1: Singleton;
-  static instance2: Singleton;
-  static instance3: Singleton;
-  public static main(){
-    this.instance1 = Singleton.getInstance();
-    this.instance2 = Singleton.getInstance();
-    this.instance3 = Singleton.getInstance();
-
-    console.log('instance1: ' + this.instance1.getData())
-    console.log('instance2: ' + this.instance2.getData())
-    console.log('instance3: ' + this.instance3.getData())
-
-    this.instance1.setData(50);
-
-    console.log('instance1: ' + this.instance1.getData())
-    console.log('instance2: ' + this.instance2.getData())
-    console.log('instance3: ' + this.instance3.getData())
-  }
-}
-SingletonMain.main();
-```
-
-`getInstance()`를 통해 3개의 인스턴스를 생성하고 있다.     
-싱글톤 패턴이 제대로 적용되었다면 3개의 인스턴스가 모두 같은 *인스턴스* 일 것이다.
 
 -----
 
@@ -223,31 +223,24 @@ SingletonMain.main();
 ### 3-1. 패턴 적용 예제
 > 적용 코드는 디렉토리 ./assets/facade.ts 확인하기
 
-*[적용 예제 참고 링크]*[https://gdtbgl93.tistory.com/142?category=755764]
+**[적용 예제 참고 링크]**[https://gdtbgl93.tistory.com/142?category=755764]
 
+-----
 
 ## 4. Observer Pattern 옵저버 패턴
-객체의 상태 변화를 관찰하는 관찰자들,즉 옵저버들의 목록을 객체에 등록하여 상태 변화가 있을 때 마다 메서드등을 통해 객체가 직접 목록의 각 옵저버들에게 통지하도록 하는 디자인 패턴이다.     
+객체의 상태 변화를 관찰하는 관찰자들, 즉 옵저버들의 목록을 객체에 등록하여 상태 변화가 있을 때 마다 메서드등을 통해 객체가 직접 목록의 각 옵저버들에게 통지하도록 하는 디자인 패턴이다.     
 
 즉, 한 객체의 상태가 바뀌면 그 객체에 의존하는 다른 객체들한테 신호가 가고, 자동으로 상태가 바뀐 내용이 갱신되는 일대다(one-to-many) 의존성을 정의하는 디자인 패턴입니다.
 
 ### 4-1 패턴 적용 예제
-```
-책 예제 1)
-1. 신문을 구독 하기 위해 신문사에 구독 신청을 합니다.
-2. 신문사는 새로운 신문이 나오면 구독자에게 배달을 해 줍니다. 구독을 하는 동안은 계속 해서 신문을 받을 수 있습니다.
-3. 더 이상 신문을 구독하고 싶지 않아서 해지 신청을 한다면, 더 이상 신문이 배달 되지 않습니다.
-
-신문사를 주제(Subject), 구독자를 옵저버(Observer)
-```
-
 ```
 카카오톡 플러스 친구 예제)
 플러스친구 목록 중에 소식을 받기 원하는 기업을 친구 추가 하면, 새로운 소식이 업데이트 될 때마다 메세지로 받아 볼 수 있습니다.
 기업의 플러스 친구 계정이 주제(Subject), 구독자(Observer)
 ```
 
+> 적용 코드는 디렉토리 ./assets/observer.ts 확인하기
 
+**[적용 예제 참고 링크]**[https://gdtbgl93.tistory.com/7]
 
-
-
+<img src="https://t1.daumcdn.net/cfile/tistory/995E9A3359D308B810?download" width="500" />
