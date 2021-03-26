@@ -232,6 +232,8 @@ _Fried_ 인터페이스를 정의하여 _CookFried_ (튀기는 방식), _CookGri
 
 즉, 한 객체의 상태가 바뀌면 그 객체에 의존하는 다른 객체들한테 신호가 가고, 자동으로 상태가 바뀐 내용이 갱신되는 일대다(one-to-many) 의존성을 정의하는 디자인 패턴입니다.
 
+<img src="./img/observer.png" width="500" />
+
 ### 4-1 패턴 적용 예제
 ```
 카카오톡 플러스 친구 예제)
@@ -244,3 +246,16 @@ _Fried_ 인터페이스를 정의하여 _CookFried_ (튀기는 방식), _CookGri
 **[적용 예제 참고 링크]**[https://gdtbgl93.tistory.com/7]
 
 <img src="https://t1.daumcdn.net/cfile/tistory/995E9A3359D308B810?download" width="500" />
+
+
+
+
+
+
+
+
+
+
+
+
+

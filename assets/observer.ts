@@ -31,7 +31,6 @@ class Company implements Subject {
       observer.update(this.url, this.content);
     })
   }
-  
   messageChanged(){ // 새로운 소식 (상태가 변함) 알려주는 메소드
     this.notifyObserver();
   }
